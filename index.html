@@ -161,9 +161,8 @@ main{max-width:1440px;margin:auto;padding:26px clamp(14px,3vw,40px) 60px}.intro{
       </div>
     </div>
     <div class="clock-card hero-clock" aria-live="off">
-      <div class="clock-label"><span class="pulse"></span> WAKTU INDONESIA BARAT · GMT+7</div>
       <div id="wibDate" class="clock-date">Memuat tanggal…</div>
-      <div id="wibTime" class="clock-time">00:00:00 WIB</div>
+      <div id="wibTime" class="clock-time">00:00:00</div>
     </div>
   </div>
 </header>
@@ -182,7 +181,7 @@ main{max-width:1440px;margin:auto;padding:26px clamp(14px,3vw,40px) 60px}.intro{
     </aside>
     <section class="player" id="player" aria-live="polite">
       <div class="player-top">
-        <button class="control mobile-back" id="mobileBackBtn" type="button">← Kembali ke daftar lagu</button>
+        <button class="control mobile-back" id="mobileBackBtn" type="button">⌕ Cari / Pilih Lagu</button>
         <div class="player-kicker">♫ Now playing · Songbook</div>
         <div class="player-title-row"><div><h1 id="songTitle">Pilih lagu</h1><div class="artist-line" id="songArtist">Tiga+ songbook collection</div></div></div>
         <div class="controls">
@@ -345,21 +344,20 @@ document.addEventListener('keydown', e => {
   if (e.altKey && e.key === 'ArrowLeft') selectSong(currentId <= 1 ? songs.length : currentId - 1, false);
 });
 
-function updateWIBClock() {
+function updateLocalClock() {
+  // Mengikuti zona waktu lokal yang diatur pada komputer atau gadget.
   const now = new Date();
   const dateText = new Intl.DateTimeFormat('id-ID', {
-    timeZone: 'Asia/Jakarta', weekday: 'long', day: 'numeric',
-    month: 'long', year: 'numeric'
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
   }).format(now);
   const timeText = new Intl.DateTimeFormat('id-ID', {
-    timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit',
-    second: '2-digit', hourCycle: 'h23'
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
   }).format(now);
   document.getElementById('wibDate').textContent = dateText;
-  document.getElementById('wibTime').textContent = timeText + ' WIB';
+  document.getElementById('wibTime').textContent = timeText;
 }
-updateWIBClock();
-setInterval(updateWIBClock, 1000);
+updateLocalClock();
+setInterval(updateLocalClock, 1000);
 
 renderList();
 selectSong(1, false);
@@ -379,3 +377,31 @@ if (isSmallScreen()) setResponsiveView('list');
 
 
 
+
+<style>
+/* Perbaikan navigasi gadget: tombol kembali/cari terlihat jelas dan mudah disentuh */
+.mobile-back{
+  background:#b7f34a!important;
+  color:#101827!important;
+  border:2px solid #d1ff79!important;
+  font-size:1rem!important;
+  font-weight:900!important;
+  min-height:52px!important;
+  padding:13px 18px!important;
+  border-radius:13px!important;
+  box-shadow:0 4px 18px #b7f34a30;
+}
+.mobile-back:hover,.mobile-back:focus-visible{
+  background:#d1ff79!important;
+  color:#101827!important;
+  outline:3px solid #ffffff!important;
+  outline-offset:2px;
+}
+@media(max-width:850px){
+  .mobile-back{display:flex!important;width:100%;justify-content:center;margin-bottom:17px}
+  body.mobile-player-mode .library{display:none}
+  body.mobile-list-mode .library{display:block}
+  .search{min-height:48px;font-size:16px}
+  .library-head{padding:16px}
+}
+</style>
