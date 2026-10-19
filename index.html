@@ -44,6 +44,65 @@ main{max-width:1440px;margin:auto;padding:26px clamp(14px,3vw,40px) 60px}.intro{
 @media(max-width:520px){.hero{padding:22px 16px}.brand{gap:12px}.brand-mark{width:45px;height:45px;border-radius:14px;font-size:22px}.brand-name{font-size:3.2rem}.tagline{font-size:.61rem;letter-spacing:.08em}.intro{align-items:start}.count-pill{font-size:.72rem;padding:9px}.song-list{grid-template-columns:1fr;max-height:260px}.song-item{padding:9px}.player-title-row{display:block}.controls .control{flex:1}.lyrics{font-size:12.5px;line-height:1.65}.player-top{padding:20px 16px}.song-content{padding:16px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 
+/* Responsive layout: desktop side-by-side, tablet and phone single-column */
+.workspace{grid-template-columns:minmax(270px,340px) minmax(0,1fr);gap:clamp(12px,2vw,22px)}
+.library,.player{min-width:0;max-width:100%}
+.song-list{overscroll-behavior:contain}
+.song-content{min-width:0}
+.lyrics{max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal}
+@media(min-width:851px){
+  .workspace{grid-template-columns:minmax(270px,340px) minmax(0,1fr)}
+  .library{position:sticky;top:16px}
+  .song-list{max-height:calc(100vh - 230px)}
+  .mobile-back{display:none!important}
+}
+@media(max-width:850px){
+  main{padding:18px 14px 38px}
+  .workspace{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+  .library,.player{width:100%;border-radius:18px}
+  .song-list{max-height:42vh;grid-template-columns:repeat(2,minmax(0,1fr));}
+  .song-item{min-height:58px}
+  .player{scroll-margin-top:10px}
+  body.mobile-list-mode .player{display:none}
+  body.mobile-player-mode .library{display:none}
+  body.mobile-player-mode .player{display:block}
+  .mobile-back{display:inline-flex;margin-bottom:14px}
+  .player-top{padding:20px}
+  .song-content{padding:18px}
+  .controls{gap:7px}
+  .control{min-height:40px}
+}
+@media(max-width:520px){
+  .hero{padding:18px 14px}
+  .brand-name{font-size:clamp(2.4rem,13vw,3.1rem)}
+  .tagline{font-size:.56rem;letter-spacing:.07em}
+  main{padding:14px 10px 28px}
+  .intro{flex-direction:column;align-items:stretch;gap:12px}
+  .count-pill{align-self:flex-start}
+  .song-list{grid-template-columns:minmax(0,1fr);max-height:52vh}
+  .song-item{padding:10px;gap:10px}
+  .song-no{flex-basis:36px;height:36px}
+  .song-title{font-size:.92rem}
+  .song-artist{font-size:.78rem}
+  .player-top{padding:17px 14px}
+  .player h1{font-size:clamp(1.5rem,7vw,2rem);overflow-wrap:anywhere}
+  .controls .control{flex:1 1 calc(33.333% - 8px);padding:9px 8px;font-size:.75rem}
+  .controls #printBtn{flex-basis:100%}
+  .chord-chips{gap:5px}
+  .chord-chip{padding:5px 7px;font-size:.75rem}
+  .song-content{padding:14px 11px}
+  .lyrics{font-size:clamp(12px,3.25vw,14px);line-height:1.65;overflow-wrap:anywhere}
+  .content-note{align-items:flex-start;font-size:.72rem}
+  .hero-clock{width:100%;min-width:0}
+}
+@media(max-width:360px){
+  .song-list{padding:6px}
+  .song-item{gap:7px;padding:8px}
+  .song-no{flex-basis:31px;height:31px;font-size:.7rem}
+  .player-title-row{display:block}
+  .controls .control{font-size:.7rem}
+}
+
 
 /* Modern compact top banner with integrated WIB clock */
 .hero{
@@ -123,6 +182,7 @@ main{max-width:1440px;margin:auto;padding:26px clamp(14px,3vw,40px) 60px}.intro{
     </aside>
     <section class="player" id="player" aria-live="polite">
       <div class="player-top">
+        <button class="control mobile-back" id="mobileBackBtn" type="button">← Kembali ke daftar lagu</button>
         <div class="player-kicker">♫ Now playing · Songbook</div>
         <div class="player-title-row"><div><h1 id="songTitle">Pilih lagu</h1><div class="artist-line" id="songArtist">Tiga+ songbook collection</div></div></div>
         <div class="controls">
@@ -248,10 +308,32 @@ function selectSong(id, scroll) {
   });
   renderList();
   document.title = song.title + ' — Tiga+ Songbook';
-  if (scroll && window.matchMedia('(max-width: 850px)').matches) {
+  if (isSmallScreen() && scroll) {
+    setResponsiveView('player');
     document.getElementById('player').scrollIntoView({behavior:'smooth',block:'start'});
+  } else if (!isSmallScreen()) {
+    setResponsiveView('player');
   }
 }
+function isSmallScreen() { return window.matchMedia('(max-width: 850px)').matches; }
+function setResponsiveView(view) {
+  if (!isSmallScreen()) {
+    document.body.classList.remove('mobile-list-mode', 'mobile-player-mode');
+    return;
+  }
+  document.body.classList.toggle('mobile-list-mode', view === 'list');
+  document.body.classList.toggle('mobile-player-mode', view === 'player');
+}
+document.getElementById('mobileBackBtn').addEventListener('click', () => {
+  setResponsiveView('list');
+  document.querySelector('.library').scrollIntoView({behavior:'smooth', block:'start'});
+  search.focus({preventScroll:true});
+});
+window.addEventListener('resize', () => {
+  if (!isSmallScreen()) setResponsiveView('player');
+  else if (!document.body.classList.contains('mobile-player-mode')) setResponsiveView('list');
+});
+if (isSmallScreen()) setResponsiveView('list');
 search.addEventListener('input', renderList);
 document.getElementById('prevBtn').addEventListener('click', () => selectSong(currentId <= 1 ? songs.length : currentId - 1, false));
 document.getElementById('nextBtn').addEventListener('click', () => selectSong(currentId >= songs.length ? 1 : currentId + 1, false));
@@ -281,6 +363,7 @@ setInterval(updateWIBClock, 1000);
 
 renderList();
 selectSong(1, false);
+if (isSmallScreen()) setResponsiveView('list');
 </script>
 <style>
 @media print{
