@@ -137,6 +137,7 @@ main{max-width:1440px;margin:auto;padding:26px clamp(14px,3vw,40px) 60px}.intro{
 .hero-clock .pulse{width:6px;height:6px;flex:0 0 6px}
 .hero-clock .clock-date{margin-top:7px;font-size:.78rem}
 .hero-clock .clock-time{font-size:clamp(1.45rem,2.5vw,2rem);letter-spacing:.035em}
+.hero-clock .clock-info{margin-top:6px;color:#d3deef;font-size:.72rem;line-height:1.35;white-space:normal}
 @media(max-width:620px){
   .hero{padding:19px 16px}
   .hero-inner{align-items:flex-start;flex-direction:column;gap:17px}
@@ -163,6 +164,8 @@ main{max-width:1440px;margin:auto;padding:26px clamp(14px,3vw,40px) 60px}.intro{
     <div class="clock-card hero-clock" aria-live="off">
       <div id="wibDate" class="clock-date">Memuat tanggal…</div>
       <div id="wibTime" class="clock-time">00:00:00</div>
+      <div id="weatherTemp" class="clock-info">🌡️ Suhu: menunggu lokasi…</div>
+      <div id="localArea" class="clock-info">📍 Kelurahan: menunggu izin lokasi…</div>
     </div>
   </div>
 </header>
@@ -358,6 +361,62 @@ function updateLocalClock() {
 }
 updateLocalClock();
 setInterval(updateLocalClock, 1000);
+
+// Cuaca dan nama wilayah berdasarkan izin lokasi dari browser.
+const weatherTempEl = document.getElementById('weatherTemp');
+const localAreaEl = document.getElementById('localArea');
+
+async function loadLocalWeatherAndArea(latitude, longitude) {
+  try {
+    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(latitude)}&longitude=${encodeURIComponent(longitude)}&current=temperature_2m&temperature_unit=celsius&timezone=auto`;
+    const weatherResponse = await fetch(weatherUrl);
+    if (!weatherResponse.ok) throw new Error('Cuaca tidak tersedia');
+    const weatherData = await weatherResponse.json();
+    const temperature = weatherData?.current?.temperature_2m;
+    weatherTempEl.textContent = Number.isFinite(temperature)
+      ? `🌡️ Suhu terkini: ${temperature} °C`
+      : '🌡️ Suhu: data tidak tersedia';
+  } catch (error) {
+    weatherTempEl.textContent = '🌡️ Suhu: gagal memuat data';
+  }
+
+  try {
+    const locationUrl = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(latitude)}&lon=${encodeURIComponent(longitude)}&zoom=18&addressdetails=1&accept-language=id`;
+    const locationResponse = await fetch(locationUrl, { headers: { 'Accept': 'application/json' } });
+    if (!locationResponse.ok) throw new Error('Lokasi tidak tersedia');
+    const locationData = await locationResponse.json();
+    const address = locationData?.address || {};
+    const area = address.village || address.suburb || address.neighbourhood ||
+      address.quarter || address.hamlet || address.city_district ||
+      address.town || address.city || address.county;
+    localAreaEl.textContent = area
+      ? `📍 Kelurahan/area: ${area}`
+      : '📍 Nama kelurahan tidak ditemukan';
+  } catch (error) {
+    localAreaEl.textContent = '📍 Area tidak dapat dimuat';
+  }
+}
+
+function requestLocalWeatherAndArea() {
+  if (!('geolocation' in navigator)) {
+    weatherTempEl.textContent = '🌡️ Suhu: browser tidak mendukung lokasi';
+    localAreaEl.textContent = '📍 Aktifkan layanan lokasi pada perangkat';
+    return;
+  }
+  weatherTempEl.textContent = '🌡️ Suhu: mengambil data…';
+  localAreaEl.textContent = '📍 Mencari nama kelurahan…';
+  navigator.geolocation.getCurrentPosition(
+    position => loadLocalWeatherAndArea(position.coords.latitude, position.coords.longitude),
+    error => {
+      weatherTempEl.textContent = '🌡️ Suhu: izinkan akses lokasi';
+      localAreaEl.textContent = error.code === 1
+        ? '📍 Izinkan lokasi di browser untuk menampilkan kelurahan'
+        : '📍 Lokasi tidak tersedia; periksa GPS/koneksi';
+    },
+    { enableHighAccuracy: false, timeout: 15000, maximumAge: 300000 }
+  );
+}
+requestLocalWeatherAndArea();
 
 renderList();
 selectSong(1, false);
