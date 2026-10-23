@@ -152,7 +152,78 @@ main{max-width:1440px;margin:auto;padding:26px clamp(14px,3vw,40px) 60px}.intro{
   .hero-clock .clock-time{font-size:1.55rem}
 }
 </style>
-</head>
+<style>\n
+/* Refined responsive controls: tidy rows on mobile and desktop */
+.controls{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:20px;
+  width:100%;
+}
+.control-row{
+  display:grid;
+  gap:9px;
+  width:100%;
+  min-width:0;
+}
+.navigation-row,.text-size-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+.transpose-row{
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+  align-items:center;
+  padding:9px;
+  gap:10px;
+  border:1px solid #2b4055;
+  border-radius:14px;
+  background:#0e1929;
+}
+.controls .control{
+  min-width:0;
+  min-height:46px;
+  margin:0;
+  padding:10px 12px;
+  border-radius:12px;
+  font-size:.84rem;
+  line-height:1.2;
+  white-space:normal;
+}
+.transpose-row .transpose-arrow{
+  width:100%;
+  min-height:48px;
+  padding:8px 12px;
+  border-radius:10px;
+  font-size:1.3rem!important;
+}
+.transpose-label{
+  padding:0 5px;
+  color:#aebed2;
+  font-size:.7rem;
+  letter-spacing:.1em;
+  white-space:nowrap;
+  text-shadow:none;
+}
+.control-hint{font-size:.68rem;font-weight:600;color:#9baac4}
+.text-size-row .control{display:flex;flex-direction:column;gap:4px}
+.controls .print-control{width:100%;flex:initial}
+.controls .control:hover{transform:translateY(-1px)}
+.controls .transpose-arrow:hover{transform:none}
+@media(max-width:520px){
+  .controls{gap:9px;margin-top:17px}
+  .control-row{gap:8px}
+  .controls .control{min-height:45px;padding:9px 8px;font-size:.78rem}
+  .transpose-row{padding:8px;gap:8px;border-radius:13px}
+  .transpose-row .transpose-arrow{min-height:48px;font-size:1.25rem!important}
+  .transpose-label{font-size:.66rem;letter-spacing:.08em;padding:0 2px}
+  .control-hint{font-size:.63rem}
+  .controls .print-control{min-height:48px;font-size:.82rem}
+}
+@media(max-width:360px){
+  .controls .control{font-size:.73rem;padding:8px 5px}
+  .transpose-row{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:6px;padding:7px}
+  .transpose-label{font-size:.6rem;letter-spacing:.05em}
+  .control-hint{font-size:.58rem}
+}
+\n</style>\n</head>
 <body>
 <header class="hero">
   <div class="hero-inner">
@@ -188,14 +259,20 @@ main{max-width:1440px;margin:auto;padding:26px clamp(14px,3vw,40px) 60px}.intro{
         <div class="player-kicker">♫ Now playing · Songbook</div>
         <div class="player-title-row"><div><h1 id="songTitle">Pilih lagu</h1><div class="artist-line" id="songArtist">Tiga+ songbook collection</div></div></div>
         <div class="controls">
-          <button class="control" id="prevBtn" type="button">← Sebelumnya</button>
-          <button class="control" id="nextBtn" type="button">Berikutnya →</button>
-          <button class="control transpose-arrow" id="transposeDownBtn" type="button" aria-label="Transpose chord turun satu semitone" title="Turun 1 semitone">⬇︎</button>
-          <span class="transpose-label" aria-hidden="true">Transpose</span>
-          <button class="control transpose-arrow" id="transposeUpBtn" type="button" aria-label="Transpose chord naik satu semitone" title="Naik 1 semitone">⬆︎</button>
-          <button class="control" id="smallerBtn" type="button" aria-label="Perkecil teks">A−</button>
-          <button class="control" id="largerBtn" type="button" aria-label="Perbesar teks">A+</button>
-          <button class="control primary" id="printBtn" type="button">⤓ Cetak / PDF</button>
+          <div class="control-row navigation-row">
+            <button class="control" id="prevBtn" type="button">← Sebelumnya</button>
+            <button class="control" id="nextBtn" type="button">Berikutnya →</button>
+          </div>
+          <div class="control-row transpose-row" role="group" aria-label="Kontrol transpose">
+            <button class="control transpose-arrow" id="transposeDownBtn" type="button" aria-label="Transpose chord turun satu semitone" title="Turun 1 semitone">⬇︎</button>
+            <span class="transpose-label" aria-hidden="true">Transpose</span>
+            <button class="control transpose-arrow" id="transposeUpBtn" type="button" aria-label="Transpose chord naik satu semitone" title="Naik 1 semitone">⬆︎</button>
+          </div>
+          <div class="control-row text-size-row">
+            <button class="control" id="smallerBtn" type="button" aria-label="Perkecil teks">A− <span class="control-hint">Kecilkan teks</span></button>
+            <button class="control" id="largerBtn" type="button" aria-label="Perbesar teks">A+ <span class="control-hint">Besarkan teks</span></button>
+          </div>
+          <button class="control primary print-control" id="printBtn" type="button">⤓ Cetak / PDF</button>
         </div>
         <div class="chord-chips" id="chordChips"></div>
       </div>
