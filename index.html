@@ -223,7 +223,127 @@ main{max-width:1440px;margin:auto;padding:26px clamp(14px,3vw,40px) 60px}.intro{
   .transpose-label{font-size:.6rem;letter-spacing:.05em}
   .control-hint{font-size:.58rem}
 }
-\n</style>\n</head>
+\n</style>\n
+<style>
+/* Compact, balanced UI density across desktop and mobile */
+main{padding-top:clamp(14px,2vw,22px);padding-bottom:36px}
+.intro{margin-bottom:14px;gap:14px}
+.intro h2{font-size:clamp(1.35rem,2.4vw,1.8rem);margin:4px 0}
+.intro p{font-size:.88rem}
+.count-pill{padding:8px 12px;border-radius:12px}
+.workspace{gap:16px}
+.library,.player{border-radius:18px}
+.library-head{padding:14px}
+.library-title{margin-bottom:10px}
+.search{padding:10px 12px 10px 36px}
+.song-list{padding:7px}
+.song-item{padding:8px 9px;gap:9px;border-radius:11px}
+.song-no{flex-basis:30px;height:30px;border-radius:9px}
+.song-title{font-size:.84rem}
+.song-artist{font-size:.7rem;margin-top:2px}
+.player-top{padding:18px clamp(14px,2.2vw,24px)}
+.player h1{font-size:clamp(1.5rem,3.2vw,2.2rem)}
+.artist-line{margin-top:5px;font-size:.84rem}
+.player-kicker{font-size:.66rem}
+.controls{gap:7px;margin-top:14px}
+.control-row{gap:7px}
+.controls .control{min-height:39px;padding:8px 10px;border-radius:10px;font-size:.78rem}
+.transpose-row{padding:6px;gap:8px;border-radius:12px}
+.transpose-row .transpose-arrow{min-height:39px;padding:6px 10px;font-size:1.1rem!important}
+.transpose-label{font-size:.65rem;letter-spacing:.08em}
+.control-hint{font-size:.62rem}
+.text-size-row .control{gap:2px}
+.controls .print-control{min-height:40px}
+.chord-chips{margin-top:12px;gap:5px}
+.chord-chip{padding:4px 8px;font-size:.73rem}
+.song-content{padding:clamp(14px,2vw,24px)}
+.content-note{padding:9px 11px;margin-bottom:14px;font-size:.74rem;border-radius:10px}
+.lyrics{font-size:13px;line-height:1.55}
+.footer{margin-top:18px}
+@media(min-width:851px){
+  .workspace{grid-template-columns:minmax(250px,300px) minmax(0,1fr);gap:16px}
+  .song-list{max-height:calc(100vh - 190px)}
+  .player-top{padding:16px 20px}
+  .controls{margin-top:12px}
+  .transpose-row .transpose-arrow{min-height:38px}
+  .song-content{padding:18px 20px}
+  .content-note{margin-bottom:12px}
+}
+@media(max-width:850px){
+  main{padding:13px 12px 26px}
+  .intro{margin-bottom:12px}
+  .workspace{gap:12px}
+  .library,.player{border-radius:17px}
+  .player-top{padding:15px 14px}
+  .mobile-back{min-height:42px!important;padding:9px 12px!important;margin-bottom:12px!important;font-size:.86rem!important;box-shadow:none!important}
+  .player-kicker{font-size:.62rem;letter-spacing:.12em}
+  .player h1{font-size:clamp(1.45rem,6vw,1.9rem);line-height:1.1}
+  .artist-line{font-size:.82rem}
+  .controls{margin-top:13px;gap:7px}
+  .controls .control{min-height:40px;padding:8px 7px;font-size:.76rem}
+  .transpose-row{padding:6px;gap:7px}
+  .transpose-row .transpose-arrow{min-height:40px}
+  .transpose-label{font-size:.62rem;letter-spacing:.06em}
+  .text-size-row .control{gap:2px}
+  .control-hint{font-size:.59rem}
+  .controls .print-control{min-height:42px;font-size:.79rem}
+  .chord-chips{margin-top:11px}
+  .song-content{padding:13px 12px}
+  .content-note{padding:9px 10px;font-size:.7rem;margin-bottom:12px}
+  .lyrics{font-size:clamp(12px,3.1vw,13px);line-height:1.55}
+  .song-list{max-height:38vh}
+}
+@media(max-width:520px){
+  .hero{padding:14px 14px}
+  .hero-inner{gap:11px}
+  .brand{gap:10px}
+  .brand-mark{width:38px;height:38px;border-radius:11px;font-size:19px;box-shadow:none}
+  .brand-name{font-size:2.45rem}
+  .tagline{font-size:.52rem;letter-spacing:.08em;margin-top:5px}
+  .hero-clock{padding:8px 12px;border-radius:12px}
+  .hero-clock .clock-date{font-size:.7rem;margin-top:4px}
+  .hero-clock .clock-time{font-size:1.3rem}
+  main{padding:11px 9px 22px}
+  .eyebrow{font-size:.62rem;letter-spacing:.12em}
+  .intro h2{font-size:1.35rem}
+  .intro p{font-size:.8rem;line-height:1.35}
+  .count-pill{font-size:.75rem;padding:7px 10px}
+  .count-pill strong{font-size:1rem}
+  .library-head{padding:12px}
+  .library-title{font-size:.9rem}
+  .tiny-label{font-size:.62rem}
+  .search{min-height:40px;padding-top:8px;padding-bottom:8px;font-size:16px}
+  .song-list{max-height:34vh;padding:6px}
+  .song-item{min-height:0;padding:7px;gap:8px}
+  .song-no{flex-basis:28px;height:28px;font-size:.7rem}
+  .song-title{font-size:.82rem}
+  .song-artist{font-size:.68rem}
+  .player-top{padding:13px 11px}
+  .player h1{font-size:1.55rem}
+  .controls{margin-top:11px;gap:6px}
+  .control-row{gap:6px}
+  .controls .control{min-height:37px;padding:7px 5px;font-size:.72rem;border-radius:9px}
+  .transpose-row{padding:5px;gap:5px}
+  .transpose-row .transpose-arrow{min-height:38px;font-size:1.05rem!important}
+  .transpose-label{font-size:.56rem;letter-spacing:.045em;padding:0 1px}
+  .control-hint{font-size:.56rem}
+  .controls .print-control{min-height:40px;font-size:.76rem}
+  .chord-chips{gap:5px;margin-top:9px}
+  .chord-chip{padding:4px 7px;font-size:.68rem}
+  .song-content{padding:11px 10px}
+  .content-note{gap:7px;padding:8px 9px;font-size:.67rem;line-height:1.4}
+  .lyrics{font-size:12px;line-height:1.5}
+  .footer{font-size:.68rem;margin-top:14px}
+}
+@media(max-width:360px){
+  .transpose-row{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:4px}
+  .transpose-label{font-size:.52rem;letter-spacing:.02em}
+  .controls .control{font-size:.68rem}
+  .control-hint{font-size:.52rem}
+}
+</style>
+
+</head>
 <body>
 <header class="hero">
   <div class="hero-inner">
