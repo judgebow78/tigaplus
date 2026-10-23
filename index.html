@@ -397,7 +397,7 @@ main{padding-top:clamp(14px,2vw,22px);padding-bottom:36px}
         <div class="chord-chips" id="chordChips"></div>
       </div>
       <div class="song-content">
-        <div class="content-note"><span>♪</span><span>Chord dan lirik ditampilkan dalam format monospasi agar susunan aslinya tetap mudah dibaca.</span></div>
+        <div class="content-note"><span id="songChordHeading">Pilih lagu chord ♪</span></div>
         <pre class="lyrics" id="lyrics">Pilih salah satu lagu dari daftar di sebelah kiri.</pre>
       </div>
     </section>
@@ -555,6 +555,7 @@ function selectSong(id, scroll) {
   if (!song) return;
   currentId = id;
   titleEl.textContent = song.title;
+  document.getElementById('songChordHeading').textContent = song.title + ' chord ♪';
   artistEl.textContent = song.artist || '';
   transposeSteps = 0;
   renderLyrics(song.body);
