@@ -520,7 +520,9 @@ function transposeBody(body, steps) {
     });
   }).join('\n');
 }
-function renderLyrics(body) {
+function renderLyrics(body, songId) {
+  // Untuk empat lagu yang diminta, warnai chord yang muncul di mana pun pada baris.
+  const colorAllChordsInSong = [3, 4, 23, 25].includes(songId);
   lyricsEl.innerHTML = body.split('\n').map(line => {
     const trimmed = line.trim();
     if (/^\[[^\]]+\]$/.test(trimmed)) {
@@ -538,8 +540,13 @@ function renderLyrics(body) {
     const colorIndexes = new Set();
     if (chordOnly) {
       tokens.forEach((_, i) => colorIndexes.add(i));
+    } else if (colorAllChordsInSong) {
+      // Warnai chord yang dikenali, termasuk jika berada setelah teks lirik.
+      tokens.forEach((token, i) => {
+        if (isChordToken(token[0])) colorIndexes.add(i);
+      });
     } else {
-      // Jika chord berada di awal baris sebelum lirik, warnai rangkaian chord awalnya.
+      // Untuk lagu lain, warnai rangkaian chord awal sebelum lirik.
       for (let i = 0; i < tokens.length; i++) {
         if (isChordToken(tokens[i][0])) colorIndexes.add(i);
         else break;
@@ -567,7 +574,7 @@ function selectSong(id, scroll) {
   document.getElementById('songChordHeading').textContent = '♪ ' + song.title + ' Chord by ' + (song.artist || 'PENYANYI/BAND').toLocaleUpperCase('id-ID');
   artistEl.textContent = song.artist || '';
   transposeSteps = 0;
-  renderLyrics(song.body);
+  renderLyrics(song.body, song.id);
   chipsEl.innerHTML = '';
   findChords(song.body).forEach(chord => {
     const chip = document.createElement('span'); chip.className='chord-chip'; chip.textContent=chord; chipsEl.append(chip);
