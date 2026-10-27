@@ -567,7 +567,18 @@ function renderLyrics(body, songId) {
       return isChordToken(token) || /^[|()[\]{}\-.*xX0-9/\\~]+$/.test(token);
     });
     const colorIndexes = new Set();
-    if (chordOnly) {
+    if (songId === 38) {
+      // Don't Cry: warnai chord biasa dan rangkaian chord yang dipisahkan tanda hubung,
+      // misalnya C-G/B-C-G/B, C-G/B-Am, serta -G/B dan -Am.
+      const isDontCryChordToken = token => {
+        if (isChordToken(token)) return true;
+        const parts = token.split('-').filter(Boolean);
+        return token.includes('-') && parts.length > 1 && parts.every(part => isChordToken(part));
+      };
+      tokens.forEach((token, i) => {
+        if (isDontCryChordToken(token[0])) colorIndexes.add(i);
+      });
+    } else if (chordOnly) {
       tokens.forEach((_, i) => colorIndexes.add(i));
     } else if (colorAllChordsInSong) {
       tokens.forEach((token, i) => {
