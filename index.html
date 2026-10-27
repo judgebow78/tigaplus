@@ -464,7 +464,9 @@ function escapeHtml(value) {
 }
 const chordTokenPattern = /^(?:N\.C\.|[A-G](?:#|b)?(?:maj|min|m|M|dim|aug|sus|add)?\d*(?:\/[A-G](?:#|b)?(?:m|M)?\d*)?[*]?)$/i;
 function isChordToken(token) {
-  return chordTokenPattern.test(token.replace(/^[([{|]+|[\])}|,;]+$/g, ''));
+  // Terima tanda titik penutup pada notasi seperti Em.., Am.., dan G...
+  const cleanToken = token.replace(/\.{1,3}$/g, '').replace(/^[([{|]+|[\])}|,;]+$/g, '');
+  return chordTokenPattern.test(cleanToken);
 }
 const CHROMATIC_SHARP = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 const CHROMATIC_FLAT  = ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
@@ -482,7 +484,7 @@ function transposeNote(note, steps, preferFlats) {
 function transposeChordToken(token, steps) {
   if (!steps || /^N\.C\.$/i.test(token)) return token;
   const leading = (token.match(/^[([{|]+/) || [''])[0];
-  const trailing = (token.match(/[)\]}|,;]+$/) || [''])[0];
+  const trailing = (token.match(/[)\]}|,;.]+$/) || [''])[0];
   let core = token.slice(leading.length, token.length - trailing.length);
   const star = core.endsWith('*') ? '*' : '';
   if (star) core = core.slice(0, -1);
