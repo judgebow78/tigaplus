@@ -533,6 +533,25 @@ function renderLyrics(body, songId) {
     }
     if (!trimmed) return escapeHtml(line);
 
+    // Khusus lagu 38 (Don't Cry): label Intro/Musik hijau lime, semua chord pada baris terkait hijau.
+    if (songId === 38 && /^Intro\s*:/i.test(trimmed)) {
+      const m = line.match(/^(\s*)(Intro\s*:)(\s*)(.*)$/i);
+      if (m) {
+        const chordText = m[4].replace(/\S+/g, token => '<span class="chord">' + escapeHtml(token) + '</span>');
+        return escapeHtml(m[1]) + '<span class="stage-direction">' + escapeHtml(m[2]) + '</span>' + escapeHtml(m[3]) + chordText;
+      }
+    }
+    if (songId === 38 && /^Musik\s*:/i.test(trimmed)) {
+      const m = line.match(/^(\s*)(Musik\s*:)(\s*)(.*)$/i);
+      if (m) {
+        const chordText = m[4].replace(/\S+/g, token => '<span class="chord">' + escapeHtml(token) + '</span>');
+        return escapeHtml(m[1]) + '<span class="stage-direction">' + escapeHtml(m[2]) + '</span>' + escapeHtml(m[3]) + chordText;
+      }
+    }
+    if (songId === 38 && /^C-G\/B-C-G\/B-Am$/i.test(trimmed)) {
+      return escapeHtml(line.slice(0, line.indexOf(trimmed))) + '<span class="chord">' + escapeHtml(trimmed) + '</span>';
+    }
+
     // Bagian/penanda tertentu ditampilkan utuh dengan warna hijau lime.
     if (/^(?:intro\s*:\s*am\s+c\s+g\s+dm|verse\s+1|verse\s+2|chorus|bridge|reff\s*:|back\s+to\s+#\s+dan\s+reff)$/i.test(trimmed)) {
       return '<span class=\"stage-direction\">' + escapeHtml(line) + '</span>';
