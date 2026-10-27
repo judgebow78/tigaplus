@@ -22,7 +22,7 @@ main{max-width:1440px;margin:auto;padding:26px clamp(14px,3vw,40px) 60px}.intro{
 .transpose-arrow:hover{border-color:#70b879!important;background:#214a31!important;color:#b5ffbd!important;box-shadow:none!important}
 .transpose-label{display:inline-flex;align-items:center;justify-content:center;padding:0 3px;color:#d6e7ff;font-size:.76rem;font-weight:850;letter-spacing:.08em;text-transform:uppercase;text-shadow:0 0 10px #8abfff55}
 .chord-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:17px}.chord-chip{padding:6px 10px;border-radius:8px;background:#203b2c;border:1px solid #3d7952;color:#7dff9a;font:700 .8rem ui-monospace,SFMono-Regular,Menlo,monospace}
-.song-content{padding:clamp(17px,3vw,30px);overflow:auto}.lyrics{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;color:#dce6f6;tab-size:4;margin:0}.lyrics .section{color:var(--accent);font-weight:800}.lyrics .stage-direction{color:#ffdf45!important;font-weight:800;text-shadow:0 0 7px #ffdf4522}.lyrics .chord{color:#39e75f!important;font-weight:800;text-shadow:0 0 7px #39e75222}.lyrics .line{min-height:1em}.content-note{display:flex;gap:9px;align-items:center;padding:12px 14px;margin:0 0 18px;background:#18263b;border:1px solid #2d405b;border-radius:12px;color:#aebed5;font-size:.78rem}.footer{color:#71829d;text-align:center;font-size:.78rem;margin-top:24px}.mobile-back{display:none}
+.song-content{padding:clamp(17px,3vw,30px);overflow:auto}.lyrics{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;color:#dce6f6;tab-size:4;margin:0}.lyrics .section{color:var(--accent);font-weight:800}.lyrics .stage-direction{color:var(--accent)!important;font-weight:800;text-shadow:0 0 7px #b7f34a22}.lyrics .chord{color:#39e75f!important;font-weight:800;text-shadow:0 0 7px #39e75222}.lyrics .line{min-height:1em}.content-note{display:flex;gap:9px;align-items:center;padding:12px 14px;margin:0 0 18px;background:#18263b;border:1px solid #2d405b;border-radius:12px;color:#aebed5;font-size:.78rem}.footer{color:#71829d;text-align:center;font-size:.78rem;margin-top:24px}.mobile-back{display:none}
 
 .band-stage{position:relative;isolation:isolate;overflow:hidden;margin:0 0 34px;padding:clamp(20px,3vw,34px);border:1px solid #34445f;border-radius:26px;background:radial-gradient(ellipse at 8% 0%,#263e60 0,transparent 40%),radial-gradient(ellipse at 100% 100%,#1e4a45 0,transparent 38%),linear-gradient(135deg,#0d1424 0%,#131d30 55%,#101b29 100%);box-shadow:0 24px 65px #0005}
 .band-stage:before{content:"";position:absolute;z-index:-1;width:350px;height:350px;right:-110px;top:-160px;border:1px solid #ffffff13;border-radius:50%;box-shadow:0 0 0 28px #ffffff06,0 0 0 56px #ffffff04}
@@ -527,14 +527,14 @@ function renderLyrics(body, songId) {
     const trimmed = line.trim();
     if (/^\[[^\]]+\]$/.test(trimmed)) {
       const label = trimmed.slice(1, -1).trim();
-      const yellowLabels = /^(intro|outro|interlude|ending|int|solo|chorus)$/i;
+      const yellowLabels = /^(intro|outro|interlude|ending|int|solo|chorus|pre-?chorus|reff|\*)$/i;
       const cls = yellowLabels.test(label) ? 'stage-direction' : 'section';
       return '<span class="' + cls + '">' + escapeHtml(trimmed) + '</span>';
     }
     if (!trimmed) return escapeHtml(line);
 
     // Warnai penanda bagian lagu tertentu dengan kuning, tanpa mengubah warna chord.
-    const markerRegex = /Kembali\s+ke\s+Reff\.?|\(repeat\)|\b2x\b|\[(?:intro|outro|interlude|ending|int|solo|chorus)\]/ig;
+    const markerRegex = /Kembali\s+ke\s+Reff\.?|ke\s+Reff\.?|Back\s+to|\(repeat\)|\(2\s+beats\)|\(Interlude\)|\(fade\s+out\)|\b2x\b|\[(?:intro|outro|interlude|ending|int|solo|chorus|pre-?chorus|reff|\*)\]/ig;
     const markerRanges = [...line.matchAll(markerRegex)].map(m => ({start:m.index, end:m.index+m[0].length}));
     // Baris yang seluruh isinya chord (contoh: "Gm      D/F#") diwarnai semua.
     const tokens = [...line.matchAll(/\S+/g)];
