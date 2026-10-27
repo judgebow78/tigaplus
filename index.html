@@ -551,7 +551,7 @@ function renderLyrics(body, songId) {
       }
     }
     if (songId === 38 && inDontCryMusicBlock) {
-      return line.replace(/\\S+/g, token => '<span class="chord">' + escapeHtml(token) + '</span>');
+      return line.replace(/\S+/g, token => '<span class="chord">' + escapeHtml(token) + '</span>');
     }
     if (songId === 38 && /^C-G\/B-C-G\/B-Am$/i.test(trimmed)) {
       return escapeHtml(line.slice(0, line.indexOf(trimmed))) + '<span class="chord">' + escapeHtml(trimmed) + '</span>';
