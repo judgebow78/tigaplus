@@ -534,6 +534,12 @@ function renderLyrics(body, songId) {
     }
     if (!trimmed) { inDontCryMusicBlock = false; return escapeHtml(line); }
 
+    // Khusus lagu 06 (I'll Be There For You): tablature pada bagian Intro/Fill
+    // menggunakan hijau chord agar garis senar dan notasi fill tidak putih.
+    if (songId === 6 && /^[eBGDAE]\|/.test(trimmed)) {
+      return '<span class="chord">' + escapeHtml(line) + '</span>';
+    }
+
     // Khusus lagu 38 (Don't Cry): label Intro/Musik hijau lime, semua chord pada baris terkait hijau.
     if (songId === 38 && /^Intro\s*:/i.test(trimmed)) {
       const m = line.match(/^(\s*)(Intro\s*:)(\s*)(.*)$/i);
