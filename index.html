@@ -527,12 +527,16 @@ function transposeBody(body, steps) {
     });
   }).join('\n');
 }
-function renderLyrics(body, songId) {
+function renderLyrics(body, songId = currentId) {
   let inDontCryMusicBlock = false;
   // Untuk empat lagu yang diminta, warnai chord yang muncul di mana pun pada baris.
   const colorAllChordsInSong = [3, 4, 23, 25].includes(songId);
   lyricsEl.innerHTML = body.split('\n').map(line => {
     const trimmed = line.trim();
+    // Khusus daftar judul pada lagu 44: putih dan tebal.
+    if (songId === 44 && /^[A-F]\. (?:Broken Heart|The Final Countdown|She's Gone|Alone|Like A Stone|November Rain)$/.test(trimmed)) {
+      return '<span class="interlude-song-heading">' + escapeHtml(line) + '</span>';
+    }
     if (/^\[[^\]]+\]$/.test(trimmed)) {
       const label = trimmed.slice(1, -1).trim();
       const yellowLabels = /^(intro|outro|interlude|ending|int|solo|chorus|pre-?chorus|reff|\*)$/i;
