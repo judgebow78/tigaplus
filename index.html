@@ -22,7 +22,7 @@ main{max-width:1440px;margin:auto;padding:26px clamp(14px,3vw,40px) 60px}.intro{
 .transpose-arrow:hover{border-color:#70b879!important;background:#214a31!important;color:#b5ffbd!important;box-shadow:none!important}
 .transpose-label{display:inline-flex;align-items:center;justify-content:center;padding:0 3px;color:#d6e7ff;font-size:.76rem;font-weight:850;letter-spacing:.08em;text-transform:uppercase;text-shadow:0 0 10px #8abfff55}
 .chord-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:17px}.chord-chip{padding:6px 10px;border-radius:8px;background:#203b2c;border:1px solid #3d7952;color:#7dff9a;font:700 .8rem ui-monospace,SFMono-Regular,Menlo,monospace}
-.song-content{padding:clamp(17px,3vw,30px);overflow:auto}.lyrics{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;color:#dce6f6;tab-size:4;margin:0}.lyrics .section{color:var(--accent);font-weight:800}.lyrics .parenthetical{color:#CD5C5C!important;font-weight:700}.lyrics .stage-direction{color:var(--accent)!important;font-weight:800;text-shadow:0 0 7px #b7f34a22}.lyrics .chord{color:#39e75f!important;font-weight:800;text-shadow:0 0 7px #39e75222}.lyrics .line{min-height:1em}.content-note{display:flex;gap:9px;align-items:center;padding:12px 14px;margin:0 0 18px;background:#18263b;border:1px solid #2d405b;border-radius:12px;color:#aebed5;font-size:.78rem}.youtube-song-link{color:inherit;text-decoration:none;display:block;width:100%;cursor:pointer}.youtube-song-link[href]:hover{color:var(--accent);text-decoration:underline;text-underline-offset:3px}.youtube-song-link:not([href]){cursor:default}.footer{color:#71829d;text-align:center;font-size:.78rem;margin-top:24px}.mobile-back{display:none}
+.song-content{padding:clamp(17px,3vw,30px);overflow:auto}.lyrics{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;color:#dce6f6;tab-size:4;margin:0}.lyrics .section{color:var(--accent);font-weight:800}.lyrics .parenthetical{color:#CD5C5C!important;font-weight:700}.lyrics .stage-direction{color:var(--accent)!important;font-weight:800;text-shadow:0 0 7px #b7f34a22}.lyrics .chord{color:#39e75f!important;font-weight:800;text-shadow:0 0 7px #39e75222}.lyrics .line{min-height:1em}.content-note{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;margin:0 0 18px;background:#18263b;border:1px solid #2d405b;border-radius:12px;color:#aebed5;font-size:.78rem}.content-note #songChordHeading{min-width:0;flex:1}.youtube-btn{display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;margin-left:auto;padding:7px 13px;border:1px solid #ff5a5f;border-radius:9px;background:#d92732;color:#fff!important;font-weight:800;text-decoration:none;white-space:nowrap;transition:background .18s,border-color .18s,transform .18s,box-shadow .18s}.youtube-btn:hover{background:#f0444d;border-color:#ff8589;color:#fff!important;transform:translateY(-1px);box-shadow:0 4px 14px #d9273244}.youtube-btn[hidden]{display:none!important}.footer{color:#71829d;text-align:center;font-size:.78rem;margin-top:24px}.mobile-back{display:none}
 
 .band-stage{position:relative;isolation:isolate;overflow:hidden;margin:0 0 34px;padding:clamp(20px,3vw,34px);border:1px solid #34445f;border-radius:26px;background:radial-gradient(ellipse at 8% 0%,#263e60 0,transparent 40%),radial-gradient(ellipse at 100% 100%,#1e4a45 0,transparent 38%),linear-gradient(135deg,#0d1424 0%,#131d30 55%,#101b29 100%);box-shadow:0 24px 65px #0005}
 .band-stage:before{content:"";position:absolute;z-index:-1;width:350px;height:350px;right:-110px;top:-160px;border:1px solid #ffffff13;border-radius:50%;box-shadow:0 0 0 28px #ffffff06,0 0 0 56px #ffffff04}
@@ -351,6 +351,15 @@ main{padding-top:clamp(14px,2vw,22px);padding-bottom:36px}
 <style>
 .lyrics .interlude-song-heading{color:#fff!important;font-weight:900!important}
 </style>
+
+<style>
+/* Content-note: judul biasa di kiri, tombol YouTube di kanan pada semua ukuran layar */
+.content-note{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px}
+.content-note #songChordHeading{flex:1 1 auto;min-width:0}
+.content-note .youtube-btn{margin-left:auto;flex:0 0 auto}
+.content-note .youtube-btn[hidden]{display:none!important}
+</style>
+
 </head>
 <body>
 <header class="hero">
@@ -407,7 +416,7 @@ main{padding-top:clamp(14px,2vw,22px);padding-bottom:36px}
         <div class="chord-chips" id="chordChips"></div>
       </div>
       <div class="song-content">
-        <div class="content-note"><a id="songChordHeading" class="youtube-song-link" aria-label="Buka video lagu di YouTube">♪ [Judul lagu] Chord by [NAMA PENYANYI/BAND]</a></div>
+        <div class="content-note"><span id="songChordHeading">♪ [Judul lagu] Chord by [NAMA PENYANYI/BAND]</span><a id="youtubeBtn" class="youtube-btn" href="#" target="_blank" rel="noopener noreferrer" hidden aria-label="Tonton lagu di YouTube">YouTube</a></div>
         <pre class="lyrics" id="lyrics">Pilih salah satu lagu dari daftar di sebelah kiri.</pre>
       </div>
     </section>
@@ -726,21 +735,25 @@ function selectSong(id, scroll) {
   if (!song) return;
   currentId = id;
   titleEl.textContent = song.title;
-  const songHeadingLink = document.getElementById('songChordHeading');
-  songHeadingLink.textContent = '♪ ' + song.title + ' Chord by ' + (song.artist || 'PENYANYI/BAND').toLocaleUpperCase('id-ID');
+  const songHeading = document.getElementById('songChordHeading');
+  songHeading.textContent = '♪ ' + song.title + ' Chord by ' + (song.artist || 'PENYANYI/BAND').toLocaleUpperCase('id-ID');
+  // Judul lagu hanya teks biasa; seluruh navigasi YouTube dilakukan oleh tombol di sisi kanan.
+  songHeading.removeAttribute('href');
+  songHeading.removeAttribute('target');
+  songHeading.removeAttribute('rel');
+  const youtubeButton = document.getElementById('youtubeBtn');
   const youtubeUrl = youtubeLinks[song.id];
   if (youtubeUrl) {
-    songHeadingLink.href = youtubeUrl;
-    songHeadingLink.target = '_blank';
-    songHeadingLink.rel = 'noopener noreferrer';
-    songHeadingLink.title = 'Klik untuk membuka video ' + song.title + ' di YouTube';
-    songHeadingLink.removeAttribute('aria-disabled');
+    youtubeButton.href = youtubeUrl;
+    youtubeButton.target = '_blank';
+    youtubeButton.rel = 'noopener noreferrer';
+    youtubeButton.title = 'Buka video ' + song.title + ' di YouTube';
+    youtubeButton.hidden = false;
   } else {
-    songHeadingLink.removeAttribute('href');
-    songHeadingLink.removeAttribute('target');
-    songHeadingLink.removeAttribute('rel');
-    songHeadingLink.title = 'Link YouTube belum tersedia untuk lagu ini';
-    songHeadingLink.setAttribute('aria-disabled', 'true');
+    youtubeButton.removeAttribute('href');
+    youtubeButton.removeAttribute('target');
+    youtubeButton.removeAttribute('rel');
+    youtubeButton.hidden = true;
   }
   artistEl.textContent = song.artist || '';
   transposeSteps = 0;
