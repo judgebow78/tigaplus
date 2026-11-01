@@ -557,51 +557,37 @@ function transposeChordToken(token, steps) {
   }
   return leading + transformed + star + trailing;
 }
-function transposeBody(body, steps) {
+function transposeBody(body, steps, songId = currentId) {
   if (!steps) return body;
   return body.split('\n').map(line => {
     const trimmed = line.trim();
-    // Judul subbagian pada Interlude Session dibuat putih dan tebal.
-    if (songId === 44 && /^[A-F]\\. (?:Broken Heart|The Final Countdown|She's Gone|Alone|Like A Stone|November Rain)$/.test(trimmed)) {
-      return '<span class="interlude-song-heading">' + escapeHtml(line) + '</span>';
-    }
+
+    // Jangan mengubah label bagian lagu maupun baris kosong.
     if (!trimmed || /^\[[^\]]+\]$/.test(trimmed)) return line;
+
     const tokens = [...line.matchAll(/\S+/g)];
     const chordOnly = tokens.length > 0 && tokens.every(m => {
       const token = m[0];
       return isChordToken(token) || /^[|()[\]{}\-.*xX0-9/\\~]+$/.test(token);
     });
+
+    // Pada baris chord saja, transposisikan semua chord.
+    if (chordOnly) {
+      return line.replace(/\S+/g, token =>
+        isChordToken(token) ? transposeChordToken(token, steps) : token
+      );
+    }
+
+    // Pada baris lirik dengan chord di awal, transposisikan rangkaian chord
+    // sampai token lirik pertama ditemukan.
     let stop = false;
     return line.replace(/\S+/g, token => {
-      if (chordOnly) return isChordToken(token) ? transposeChordToken(token, steps) : token;
       if (stop) return token;
       if (isChordToken(token)) return transposeChordToken(token, steps);
       stop = true;
       return token;
     });
   }).join('\n');
-  // Warnai semua teks di dalam tanda kurung dengan warna #CD5C5C.
-  const walker = document.createTreeWalker(lyricsEl, NodeFilter.SHOW_TEXT);
-  const textNodes = [];
-  while (walker.nextNode()) {
-    if (/\\([^()\\n]*\\)/.test(walker.currentNode.nodeValue)) textNodes.push(walker.currentNode);
-  }
-  textNodes.forEach(node => {
-    const value = node.nodeValue;
-    const pattern = /\\([^()\\n]*\\)/g;
-    const fragment = document.createDocumentFragment();
-    let cursor = 0, match;
-    while ((match = pattern.exec(value)) !== null) {
-      if (match.index > cursor) fragment.appendChild(document.createTextNode(value.slice(cursor, match.index)));
-      const span = document.createElement('span');
-      span.className = 'parenthetical';
-      span.textContent = match[0];
-      fragment.appendChild(span);
-      cursor = match.index + match[0].length;
-    }
-    if (cursor < value.length) fragment.appendChild(document.createTextNode(value.slice(cursor)));
-    node.parentNode.replaceChild(fragment, node);
-  });
 }
 function renderLyrics(body, songId = currentId) {
   let inDontCryMusicBlock = false;
@@ -775,9 +761,9 @@ function applyTranspose(delta) {
   const song = songs.find(s => s.id === currentId);
   if (!song) return;
   transposeSteps += delta;
-  renderLyrics(transposeBody(song.body, transposeSteps));
+  renderLyrics(transposeBody(song.body, transposeSteps, song.id), song.id);
   chipsEl.innerHTML = '';
-  findChords(transposeBody(song.body, transposeSteps)).forEach(chord => {
+  findChords(transposeBody(song.body, transposeSteps, song.id)).forEach(chord => {
     const chip = document.createElement('span');
     chip.className = 'chord-chip';
     chip.textContent = chord;
