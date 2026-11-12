@@ -636,6 +636,19 @@ function renderLyrics(body, songId = currentId) {
       return line.replace(/\S+/g, token => '<span class="chord">' + escapeHtml(token) + '</span>');
     }
 
+    // Khusus lagu 2 (Satu Hati): baris chord Interlude "D - Em - C"
+    // termasuk baris dengan penanda "(2x)" ditampilkan hijau.
+    if (songId === 2 && /^D\s+-\s+Em\s+-\s+C(?:\s+\(2x\))?$/i.test(trimmed)) {
+      const repeat = line.match(/\(2x\)/i);
+      const chordPart = repeat ? line.slice(0, repeat.index) : line;
+      const repeatPart = repeat ? line.slice(repeat.index) : '';
+      return chordPart.replace(/\S+/g, token =>
+        '<span class="chord">' + escapeHtml(token) + '</span>'
+      ) + (repeatPart
+        ? '<span class="lime-note">' + escapeHtml(repeatPart) + '</span>'
+        : '');
+    }
+
     // Khusus lagu 2 (Satu Hati): warnai penanda pengulangan "(2x)" secara utuh dengan hijau lime.
     if (songId === 2) {
       const repeatMarker = line.match(/\(2x\)/i);
