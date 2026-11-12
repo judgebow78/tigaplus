@@ -942,57 +942,7 @@ if (isSmallScreen()) setResponsiveView('list');
 }
 </style>
 
-<script>
-/* TIGA_PLUS_AUTO_CONTENT_REFRESH
-   HTTP/HTTPS: compare the downloaded HTML source and reload only on changes.
-   file://: browsers block re-reading local files, so use a timed fallback.
-*/
-(function () {
-  "use strict";
-  var CHECK_EVERY_MS = 5000;
-  var FILE_FALLBACK_MS = 30000;
-  var originalSource = null;
-  var checking = false;
 
-  function fetchSource() {
-    return fetch(window.location.href, {
-      method: "GET",
-      cache: "no-store",
-      headers: { "Cache-Control": "no-cache" }
-    }).then(function (response) {
-      if (!response.ok) throw new Error("HTTP " + response.status);
-      return response.text();
-    });
-  }
-
-  if (window.location.protocol === "file:") {
-    window.setInterval(function () {
-      if (!document.hidden) window.location.reload();
-    }, FILE_FALLBACK_MS);
-    return;
-  }
-
-  fetchSource().then(function (source) {
-    originalSource = source;
-    window.setInterval(function () {
-      if (checking || document.hidden) return;
-      checking = true;
-      fetchSource()
-        .then(function (latestSource) {
-          if (latestSource !== originalSource) window.location.reload();
-        })
-        .catch(function () {
-          /* Keep the current songbook usable during temporary connection errors. */
-        })
-        .finally(function () {
-          checking = false;
-        });
-    }, CHECK_EVERY_MS);
-  }).catch(function () {
-    /* If the initial check is unavailable, leave the songbook undisturbed. */
-  });
-})();
-</script>
 
 </body>
 </html>
