@@ -631,16 +631,17 @@ function renderLyrics(body, songId = currentId) {
     }
     if (!trimmed) { inDontCryMusicBlock = false; return escapeHtml(line); }
 
-    // Khusus lagu 2 (Satu Hati): chord D..D tetap berwarna hijau seperti chord lainnya.
-    if (songId === 2 && /^G\\s+Em\\s+C\\s+D\\.\\.D$/i.test(trimmed)) {
-      return line.replace(/\\S+/g, token => '<span class="chord">' + escapeHtml(token) + '</span>');
+    // Khusus lagu 2 (Satu Hati): semua token chord pada baris Intro, termasuk D..D, berwarna hijau.
+    if (songId === 2 && /^G\s+Em\s+C\s+D\.\.D$/i.test(trimmed)) {
+      return line.replace(/\S+/g, token => '<span class="chord">' + escapeHtml(token) + '</span>');
     }
 
-    // Khusus lagu 2 (Satu Hati): penanda (2x) ditampilkan utuh dengan warna hijau lime.
-    if (songId === 2 && /satu hati\\.\\. kita harus\\.\\.\\.satu hati \\(2x\\)/i.test(line)) {
-      const marker = 'satu hati.. kita harus...satu hati (2x)';
-      const at = line.indexOf(marker);
-      if (at !== -1) {
+    // Khusus lagu 2 (Satu Hati): warnai penanda pengulangan "(2x)" secara utuh dengan hijau lime.
+    if (songId === 2) {
+      const repeatMarker = line.match(/\(2x\)/i);
+      if (repeatMarker) {
+        const at = repeatMarker.index;
+        const marker = repeatMarker[0];
         return escapeHtml(line.slice(0, at)) +
           '<span class="lime-note">' + escapeHtml(marker) + '</span>' +
           escapeHtml(line.slice(at + marker.length));
