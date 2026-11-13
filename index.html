@@ -381,6 +381,16 @@ main{padding-top:clamp(14px,2vw,22px);padding-bottom:36px}
 .lyrics .lime-note{color:#b7f34a!important;font-weight:800!important;text-shadow:0 0 7px #b7f34a22}
 </style>
 
+
+<style>
+/* YouTube logo + white wordmark; lime glow on hover */
+.content-note .youtube-btn{display:inline-flex!important;flex:0 0 auto!important;align-items:center;justify-content:center;gap:7px;width:auto;min-width:108px;height:36px;margin-left:auto;padding:4px 9px;overflow:visible;border:1px solid transparent;border-radius:9px;background:transparent;text-decoration:none;box-shadow:none;transition:border-color .18s ease,box-shadow .18s ease,background .18s ease,transform .18s ease}
+.content-note .youtube-btn svg{display:block;flex:0 0 32px;width:32px;height:23px}
+.content-note .youtube-btn .youtube-label{display:inline-block;color:#fff;font-family:Impact,"Arial Narrow","Roboto Condensed",Arial,sans-serif;font-size:20px;font-weight:900;line-height:1;letter-spacing:-.75px;white-space:nowrap;text-shadow:0 1px 1px #0008}
+.content-note .youtube-btn:hover{border-color:#b7f34a;background:#b7f34a0c;box-shadow:0 0 5px #b7f34a99,0 0 13px #b7f34a55,inset 0 0 5px #b7f34a18;filter:none;transform:translateY(-1px)}
+.content-note .youtube-btn:focus-visible{outline:2px solid #b7f34a;outline-offset:3px;box-shadow:0 0 8px #b7f34a88}
+@media(max-width:520px){.content-note .youtube-btn{min-width:100px;height:34px;gap:6px;padding:4px 7px}.content-note .youtube-btn svg{flex-basis:29px;width:29px;height:21px}.content-note .youtube-btn .youtube-label{font-size:18px}}
+</style>
 </head>
 <body>
 <header class="hero">
@@ -437,7 +447,7 @@ main{padding-top:clamp(14px,2vw,22px);padding-bottom:36px}
         <div class="chord-chips" id="chordChips"></div>
       </div>
       <div class="song-content">
-        <div class="content-note"><span id="songChordHeading">♪ [Judul lagu] Chord by [NAMA PENYANYI/BAND]</span><a id="youtubeBtn" class="youtube-btn" href="#" target="_blank" rel="noopener noreferrer" hidden aria-label="Tonton lagu di YouTube"><svg viewBox="0 0 237 161" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M18 31C20 16 31 8 48 6C90 1 147 1 189 6C211 8 221 17 224 35C229 64 229 99 224 126C221 144 211 152 189 155C146 160 91 160 48 155C29 153 19 144 16 126C11 97 12 60 18 31Z" fill="#ff0000"/><path d="M101 48L155 80.5L101 113V48Z" fill="#fff"/></svg></a></div>
+        <div class="content-note"><span id="songChordHeading">♪ [Judul lagu] Chord by [NAMA PENYANYI/BAND]</span><a id="youtubeBtn" class="youtube-btn" href="#" target="_blank" rel="noopener noreferrer" hidden aria-label="Tonton lagu di YouTube"><svg viewBox="0 0 237 161" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M18 31C20 16 31 8 48 6C90 1 147 1 189 6C211 8 221 17 224 35C229 64 229 99 224 126C221 144 211 152 189 155C146 160 91 160 48 155C29 153 19 144 16 126C11 97 12 60 18 31Z" fill="#ff0000"/><path d="M101 48L155 80.5L101 113V48Z" fill="#fff"/></svg><span class="youtube-label">YouTube</span></a></div>
         <pre class="lyrics" id="lyrics">Pilih salah satu lagu dari daftar di sebelah kiri.</pre>
       </div>
     </section>
@@ -1043,5 +1053,6 @@ if (isSmallScreen()) setResponsiveView('list');
   .library-head{padding:16px}
 }
 </style>
+
 
 
