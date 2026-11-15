@@ -567,7 +567,7 @@ function escapeHtml(value) {
 const chordTokenPattern = /^(?:N\.C\.|[A-G](?:#|b)?(?:maj|min|m|M|dim|aug|sus|add)?\d*(?:\/[A-G](?:#|b)?(?:m|M)?\d*)?[*]?)$/i;
 function isChordToken(token) {
   // Terima tanda titik penutup pada notasi seperti Em.., Am.., dan G...
-  const cleanToken = token.replace(/\.{1,3}$/g, '').replace(/^[([{|]+|[\])}|,;]+$/g, '').replace(/^-+(?=[A-G])/i, '');
+  const cleanToken = token.replace(/[.…]+$/g, '').replace(/^[([{|]+|[\])}|,;]+$/g, '').replace(/^-+(?=[A-G])/i, '');
   return chordTokenPattern.test(cleanToken);
 }
 const CHROMATIC_SHARP = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
@@ -660,9 +660,12 @@ function renderLyrics(body, songId = currentId) {
         const matches = [...text.matchAll(/\S+/g)];
         const isChordGroup = token => {
           if (isChordToken(token)) return true;
-          const parts = token.split('-').filter(Boolean);
-          return token.includes('-') && parts.length > 0 && parts.every(part => isChordToken(part));
+          // Kenali gabungan chord yang dipisahkan tanda hubung atau titik,
+          // misalnya C-Dm-Em, Em..C..G..D.., Am..B... dan G…..
+          const parts = token.split(/[.…-]+/).filter(Boolean);
+          return /[.…-]/.test(token) && parts.length > 0 && parts.every(part => isChordToken(part));
         };
+        const isRepeatMarker = token => /^\[\d+x\]$/i.test(token);
         const neutral = token => /^[|()[\]{}.*xX0-9/\\~,:;]+$/.test(token) || /^-+$/.test(token);
         const chordOnlyLine = matches.length > 0 && matches.every(m => isChordGroup(m[0]) || neutral(m[0]));
         let stop = false;
@@ -671,13 +674,17 @@ function renderLyrics(body, songId = currentId) {
         for (const match of matches) {
           result += escapeHtml(text.slice(cursor, match.index));
           const token = match[0];
-          const shouldColor = chordOnlyLine ? isChordGroup(token) :
-            (!stop && isChordGroup(token));
-          if (shouldColor) {
-            result += '<span class="chord">' + escapeHtml(token) + '</span>';
+          if (isRepeatMarker(token)) {
+            result += '<span class="lime-note">' + escapeHtml(token) + '</span>';
           } else {
-            result += escapeHtml(token);
-            if (!neutral(token)) stop = true;
+            const shouldColor = chordOnlyLine ? isChordGroup(token) :
+              (!stop && isChordGroup(token));
+            if (shouldColor) {
+              result += '<span class="chord">' + escapeHtml(token) + '</span>';
+            } else {
+              result += escapeHtml(token);
+              if (!neutral(token)) stop = true;
+            }
           }
           cursor = match.index + token.length;
         }
